@@ -13,7 +13,7 @@ export default function Christmas() {
         minHeight: "100vh",
       }}
     >
-      <h2 className="text-3xl font-bold mb-4 text-green-600  shadow-lg shadow-slate-800  p-4 inline-block">
+      <h2 className="text-3xl font-bold mb-4 text-green-600  shadow-lg shadow-green-800  p-4 inline-block">
         Christmas Wishlist
       </h2>
 
