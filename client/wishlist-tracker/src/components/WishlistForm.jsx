@@ -1,17 +1,19 @@
 import React, { useState, useContext } from "react";
 import { WishlistContext } from "../context/WishlistContext";
 
-export default function WishlistForm({ theme }) {
-  const { categories, addItem } = useContext(WishlistContext);
+export default function WishlistForm({ theme, item, onSave }) {
+  const { categories, addItem, updateItem } = useContext(WishlistContext);
 
-  const [formData, setFormData] = useState({
-    name: "",
-    price: "",
-    description: "",
-    link: "",
-    image: "",
-    category: "",
-  });
+  const [formData, setFormData] = useState(
+    item || {
+      name: "",
+      price: 0,
+      description: "",
+      link: "",
+      image: "",
+      category: "",
+    }
+  );
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -23,15 +25,22 @@ export default function WishlistForm({ theme }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    addItem({ ...formData, theme });
+    if (item) {
+      updateItem(item._id, { ...formData, theme });
+    } else {
+      addItem({ ...formData, theme });
+    }
+
     setFormData({
       name: "",
-      price: "",
+      price: 0,
       description: "",
       link: "",
       image: "",
       category: "",
     });
+
+    onSave();
   };
 
   const themeClasses = {
@@ -51,13 +60,21 @@ export default function WishlistForm({ theme }) {
       form: "bg-purple-500",
       button: "bg-purple-700 hover:bg-purple-900",
     },
+    default: {
+      form: "bg-white",
+      button: "bg-blue-500 hover:bg-blue-700",
+    },
   };
 
   return (
-    <div className={`rounded-md p-4 ${themeClasses[theme].form}`}>
+    <div
+      className={`rounded-md p-4 ${
+        (themeClasses[theme] || themeClasses.default).form
+      } `}
+    >
       <form onSubmit={handleSubmit} className="flex flex-col">
         <h2 className="text-2xl font-bold mb-4 text-slate-700 text-center">
-          Add Wishlist Item
+          {item ? "Edit Wishlist Item" : "Add Wishlist Item"}
         </h2>
         <div className="mb-5">
           <label className="block text-gray-700 mb-2">Name</label>
@@ -127,10 +144,13 @@ export default function WishlistForm({ theme }) {
           </select>
         </div>
         <button
+          onClick={handleSubmit}
           type="submit"
-          className={`text-white font-semibold py-2 rounded-lg shadow-md transition duration-300 ease-in-out mb-5 ${themeClasses[theme].button}`}
+          className={`text-white font-semibold py-2 rounded-lg shadow-md transition duration-300 ease-in-out mb-5 ${
+            (themeClasses[theme] || themeClasses.default).button
+          }`}
         >
-          Add Item
+          {item ? "Save Changes" : "Add Item"}
         </button>
       </form>
     </div>

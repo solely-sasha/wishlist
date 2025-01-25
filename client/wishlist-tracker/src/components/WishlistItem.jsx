@@ -1,13 +1,19 @@
 import React, { useState, useContext } from "react";
 import { Link } from "react-router-dom";
+import WishlistForm from "./WishlistForm";
 import { WishlistContext } from "../context/WishlistContext";
 
 export default function WishlistItem({ item, theme }) {
   const [isOpen, setIsOpen] = useState(false);
-  const { deleteItem } = useContext(WishlistContext);
+  const [isEditing, setIsEditing] = useState(false);
+  const { deleteItem, items, setItems } = useContext(WishlistContext);
 
   const handleDelete = () => {
     deleteItem(item._id);
+  };
+
+  const handleEditing = () => {
+    setIsEditing(!isEditing);
   };
   return (
     <div className="bg-white shadow-md rounded p-4">
@@ -24,6 +30,12 @@ export default function WishlistItem({ item, theme }) {
         </span>
       </h3>
       <button
+        onClick={handleEditing}
+        className="mr-2 relative inline-flex items-center justify-center px-5 py-2 text-base font-bold text-white transition-all duration-200 bg-gray-700 border-2 border-transparent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-700 hover:bg-gray-900 rounded"
+      >
+        {isEditing ? "Cancel" : "Edit"}
+      </button>
+      <button
         onClick={() => setIsOpen(!isOpen)}
         className="relative inline-flex items-center justify-center px-5 py-2 text-base font-bold text-white transition-all duration-200 bg-gray-700 border-2 border-transparent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-700 hover:bg-gray-900 rounded"
       >
@@ -35,6 +47,13 @@ export default function WishlistItem({ item, theme }) {
       >
         Delete
       </button>
+      {isEditing && (
+        <WishlistForm
+          theme={theme}
+          item={item}
+          onSave={() => setIsEditing(false)}
+        />
+      )}
       {isOpen && (
         <>
           <div>

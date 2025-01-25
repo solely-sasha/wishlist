@@ -12,7 +12,7 @@ export const WishlistProvider = ({ children }) => {
       try {
         const response = await axios.get("/api/categories");
         setCategories(response.data);
-        console.log("Fetched categories:", response.data); // Add this line
+        console.log("Fetched categories:", response.data);
       } catch (error) {
         console.error("Error fetching categories:", error);
       }
@@ -40,12 +40,16 @@ export const WishlistProvider = ({ children }) => {
     fetchWishlist();
   };
 
-  const updateItem = async (update, itemId) => {
+  const updateItem = async (itemId, updates) => {
     try {
-      const response = await axios.put(`/api/wishlist/item/${itemId}`, update);
-      setItems((prevItems) =>
-        prevItems.map((item) => (item._id !== itemId ? item : response.data))
-      );
+      const response = await axios.put(`/api/wishlist/item/${itemId}`, updates);
+      setItems((prevItems) => {
+        const updatedItems = prevItems.map((item) =>
+          item._id !== itemId ? item : { ...item, ...updates }
+        );
+        console.log(response);
+        return updatedItems;
+      });
     } catch (error) {
       console.error("Error updating item:", error);
     }
